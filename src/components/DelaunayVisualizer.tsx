@@ -23,47 +23,6 @@ const DelaunayVisualizer: React.FC = () => {
         return newPoints;
     };
 
-    // Función para calcular y dibujar la triangulación de Delaunay
-    const drawDelaunay = () => {
-        if (!canvasRef.current) return;
-
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-
-        // Limpiar canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Calcular la triangulación de Delaunay
-        const delaunay = Delaunay.from(points);
-
-        // Dibujar triángulos
-        ctx.strokeStyle = "#1976d2";
-        ctx.lineWidth = 1.5;
-        const triangles = delaunay.triangles;
-
-        for (let i = 0; i < triangles.length; i += 3) {
-            const p1 = points[triangles[i]];
-            const p2 = points[triangles[i + 1]];
-            const p3 = points[triangles[i + 2]];
-
-            ctx.beginPath();
-            ctx.moveTo(p1[0], p1[1]);
-            ctx.lineTo(p2[0], p2[1]);
-            ctx.lineTo(p3[0], p3[1]);
-            ctx.closePath();
-            ctx.stroke();
-        }
-
-        // Dibujar puntos
-        ctx.fillStyle = "#d32f2f";
-        points.forEach(([x, y]) => {
-            ctx.beginPath();
-            ctx.arc(x, y, 4, 0, 2 * Math.PI);
-            ctx.fill();
-        });
-    };
-
     // Manejar la generación de nuevos puntos
     const handleGeneratePoints = () => {
         const newPoints = generateRandomPoints(pointCount);
@@ -72,6 +31,46 @@ const DelaunayVisualizer: React.FC = () => {
 
     // Redibujar cuando los puntos cambien
     useEffect(() => {
+        const drawDelaunay = () => {
+            if (!canvasRef.current) return;
+
+            const canvas = canvasRef.current;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) return;
+
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Calcular la triangulación de Delaunay
+            const delaunay = Delaunay.from(points);
+
+            // Dibujar triángulos
+            ctx.strokeStyle = "#1976d2";
+            ctx.lineWidth = 1.5;
+            const triangles = delaunay.triangles;
+
+            for (let i = 0; i < triangles.length; i += 3) {
+                const p1 = points[triangles[i]];
+                const p2 = points[triangles[i + 1]];
+                const p3 = points[triangles[i + 2]];
+
+                ctx.beginPath();
+                ctx.moveTo(p1[0], p1[1]);
+                ctx.lineTo(p2[0], p2[1]);
+                ctx.lineTo(p3[0], p3[1]);
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            // Dibujar puntos
+            ctx.fillStyle = "#d32f2f";
+            points.forEach(([x, y]) => {
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+            });
+        };
+
         if (points.length > 0) {
             drawDelaunay();
         }
